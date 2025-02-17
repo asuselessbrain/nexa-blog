@@ -1,11 +1,21 @@
 import BlogDetailsCard from "@/components/ui/BlogDetailsCard";
+import { Blog } from "@/types";
 
-const page = async ({ params }: { params: Promise<{ blogId: string }> }) => {
+export const generateStaticParams = async () => {
+  const data = await fetch(`http://localhost:5000/blogs`);
+  const blogs = await data.json();
+
+  return blogs.slice(0, 3).map((blog: Blog) => ({ blogId: blog.id }));
+};
+
+const ViewDetailsPage = async ({
+  params,
+}: {
+  params: Promise<{ blogId: string }>;
+}) => {
   const { blogId } = await params;
 
-  const data = await fetch(`http://localhost:5000/blogs/${blogId}`, {
-    cache: "no-store",
-  });
+  const data = await fetch(`http://localhost:5000/blogs/${blogId}`);
 
   const blog = await data.json();
 
@@ -18,4 +28,4 @@ const page = async ({ params }: { params: Promise<{ blogId: string }> }) => {
   );
 };
 
-export default page;
+export default ViewDetailsPage;
